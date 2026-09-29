@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import type L from 'leaflet';
 import { GtaMap } from '../map/GtaMap';
@@ -22,6 +22,9 @@ export function PublicViewer() {
   const [panelOpen, setPanelOpen] = useState(!orgId);
 
   useGridLayer(map, { cells, neutral: true, highlightUser: null }, cells);
+  useEffect(() => {
+    map?.getContainer().classList.add('map-muted');
+  }, [map]);
   useHoverOutline(map, hover);
   useMapPointer(map, false, { onHover: setHover });
 

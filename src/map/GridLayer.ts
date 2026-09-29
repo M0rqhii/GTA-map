@@ -7,17 +7,19 @@ export type GridData = {
   colorOf: (userId: string) => string | null;
   highlightUser: string | null;
   neutral: boolean; // public viewer: one color, no owners
+  gridLines: boolean; // off in the OBS overlay, where lines a few px apart are only noise
   flashKeys: Set<number>;
 };
 
-const NEUTRAL = '#f4efe2';
+// Public cells: a saturated amber that no sand, forest, city or water on the satellite map comes close to.
+const NEUTRAL = '#ffb81c';
 const TILE = 256;
 
 type TileEntry = { el: HTMLCanvasElement; coords: L.Coords };
 
 // Draws the search grid and marked cells on canvas tiles, so Leaflet pans and zooms them with the map.
 export class GridLayer extends L.GridLayer {
-  private data: GridData = { cells: new Map(), colorOf: () => null, highlightUser: null, neutral: false, flashKeys: new Set() };
+  private data: GridData = { cells: new Map(), colorOf: () => null, highlightUser: null, neutral: false, gridLines: true, flashKeys: new Set() };
 
   constructor() {
     super({ tileSize: TILE, updateWhenZooming: false, pane: 'overlayPane', noWrap: true });
@@ -59,32 +61,34 @@ export class GridLayer extends L.GridLayer {
 
     const toX = (gx: number) => (GRID.originX + gx * CELL_PX - x0) * scale;
     const toY = (gy: number) => (GRID.originY + gy * CELL_PX - y0) * scale;
-    const { cells, colorOf, highlightUser, neutral, flashKeys } = this.data;
+    const { cells, colorOf, highlightUser, neutral, gridLines, flashKeys } = this.data;
 
-    // Marked cells
-    for (let gy = cy0; gy <= cy1; gy++) {
-      for (let gx = cx0; gx <= cx1; gx++) {
-        const c = cells.get(cellKey(gx, gy));
-        if (!c) continue;
-        const color = neutral ? NEUTRAL : colorOf(c.userId) ?? '#9aa3af';
-        const dim = highlightUser !== null && c.userId !== highlightUser;
-        const left = toX(gx);
-        const top = toY(gy);
-        ctx.globalAlpha = neutral ? 0.34 : dim ? 0.1 : 0.44;
-        ctx.fillStyle = color;
-        ctx.fillRect(left, top, cell, cell);
-        if (cell >= 6 && !dim) {
-          ctx.globalAlpha = 0.9;
-          ctx.strokeStyle = color;
-          ctx.lineWidth = cell >= 24 ? 1.5 : 1;
-          ctx.strokeRect(left + 0.75, top + 0.75, cell - 1.5, cell - 1.5);
+    if (!neutral) {
+      // Marked cells
+      for (let gy = cy0; gy <= cy1; gy++) {
+        for (let gx = cx0; gx <= cx1; gx++) {
+          const c = cells.get(cellKey(gx, gy));
+          if (!c) continue;
+          const color = colorOf(c.userId) ?? '#9aa3af';
+          const dim = highlightUser !== null && c.userId !== highlightUser;
+          const left = toX(gx);
+          const top = toY(gy);
+          ctx.globalAlpha = dim ? 0.1 : 0.44;
+          ctx.fillStyle = color;
+          ctx.fillRect(left, top, cell, cell);
+          if (cell >= 6 && !dim) {
+            ctx.globalAlpha = 0.9;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = cell >= 24 ? 1.5 : 1;
+            ctx.strokeRect(left + 0.75, top + 0.75, cell - 1.5, cell - 1.5);
+          }
         }
       }
+      ctx.globalAlpha = 1;
     }
-    ctx.globalAlpha = 1;
 
     // Grid lines: a dark and a light hairline side by side stay visible on sand, forest and water alike.
-    if (cell >= 5) {
+    if (gridLines && cell >= 5) {
       const strong = cell >= 16;
       const top = Math.max(0, toY(0));
       const bottom = Math.min(TILE, toY(GRID.rows));
@@ -111,21 +115,70 @@ export class GridLayer extends L.GridLayer {
       else pass('rgba(255,255,255,0.1)', 1.5);
     }
 
+    // Public areas go over the grid lines so their outline stays crisp.
+    if (neutral) this.drawAreas(ctx, cx0, cy0, cx1, cy1, cell, toX, toY);
+
     // Grid frame
     ctx.strokeStyle = 'rgba(245,181,10,0.55)';
     ctx.lineWidth = 1.5;
     ctx.strokeRect(toX(0), toY(0), GRID.cols * cell, GRID.rows * cell);
 
-    // Flash (history jump)
+    // Flash: history jump in the app, freshly searched cells in the public views
     if (flashKeys.size > 0) {
       ctx.strokeStyle = '#ffd045';
+      ctx.fillStyle = '#fff6d8';
       ctx.lineWidth = Math.max(2, Math.min(4, cell / 8));
       for (const key of flashKeys) {
         const gx = key % GRID.cols;
         const gy = Math.floor(key / GRID.cols);
         if (gx < cx0 || gx > cx1 || gy < cy0 || gy > cy1) continue;
-        ctx.strokeRect(toX(gx) + 1, toY(gy) + 1, cell - 2, cell - 2);
+        if (neutral) {
+          if (!cells.has(key)) continue; // unmarked again before the glow ended
+          ctx.globalAlpha = 0.9;
+          ctx.fillRect(toX(gx), toY(gy), cell, cell);
+          ctx.globalAlpha = 1;
+        } else {
+          ctx.strokeRect(toX(gx) + 1, toY(gy) + 1, cell - 2, cell - 2);
+        }
       }
     }
+  }
+
+  // Public cells as areas: one solid fill, outlined only where the searched area ends, so they read as
+  // shapes on sand, city and water alike, even when a cell is only a few pixels wide.
+  private drawAreas(
+    ctx: CanvasRenderingContext2D, cx0: number, cy0: number, cx1: number, cy1: number, cell: number,
+    toX: (gx: number) => number, toY: (gy: number) => number,
+  ): void {
+    const { cells } = this.data;
+    const marked = (gx: number, gy: number) =>
+      gx >= 0 && gy >= 0 && gx < GRID.cols && gy < GRID.rows && cells.has(cellKey(gx, gy));
+
+    ctx.globalAlpha = 0.55;
+    ctx.fillStyle = NEUTRAL;
+    const edges = new Path2D();
+    for (let gy = cy0; gy <= cy1; gy++) {
+      for (let gx = cx0; gx <= cx1; gx++) {
+        if (!marked(gx, gy)) continue;
+        const l = toX(gx);
+        const t = toY(gy);
+        ctx.fillRect(l, t, cell, cell);
+        if (!marked(gx, gy - 1)) { edges.moveTo(l, t); edges.lineTo(l + cell, t); }
+        if (!marked(gx, gy + 1)) { edges.moveTo(l, t + cell); edges.lineTo(l + cell, t + cell); }
+        if (!marked(gx - 1, gy)) { edges.moveTo(l, t); edges.lineTo(l, t + cell); }
+        if (!marked(gx + 1, gy)) { edges.moveTo(l + cell, t); edges.lineTo(l + cell, t + cell); }
+      }
+    }
+    // A dark halo under the outline keeps the edge visible on bright sand and concrete.
+    const width = cell >= 16 ? 2 : cell >= 6 ? 1.5 : 1;
+    ctx.lineJoin = 'round';
+    ctx.globalAlpha = 0.55;
+    ctx.strokeStyle = '#06080b';
+    ctx.lineWidth = width + 2;
+    ctx.stroke(edges);
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = NEUTRAL;
+    ctx.lineWidth = width;
+    ctx.stroke(edges);
   }
 }

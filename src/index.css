@@ -102,6 +102,14 @@ body {
 .leaflet-control-zoom a:hover { background: var(--color-ink-700) !important; color: var(--color-sun) !important; }
 .leaflet-container.map-brush, .leaflet-container.map-brush .leaflet-interactive { cursor: crosshair !important; }
 .leaflet-container.map-pin-mode { cursor: copy !important; }
+/* Public views: a muted satellite image, so the searched areas are what the eye lands on. */
+.map-muted .leaflet-tile-pane { filter: saturate(0.7) brightness(0.78); }
+.map-muted-strong .leaflet-tile-pane { filter: saturate(0.45) brightness(0.58) contrast(1.05); }
+/* Leaflet's plus-lighter tile blending draws light seams on a dimmed map; plain blending leaves hairline
+   gaps instead, which disappear once the background has the filtered ocean color. */
+.map-muted img.leaflet-tile, .map-muted-strong img.leaflet-tile { mix-blend-mode: normal; }
+.leaflet-container.map-muted { background: #182e47; }
+.leaflet-container.map-muted-strong { background: #111c29; }
 
 .pin-marker { background: transparent; border: none; }
 .pin-marker .pin-body {
