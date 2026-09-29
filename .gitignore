@@ -6,3 +6,4 @@ dist
 .vercel
 tiles-src/
 *.log
+.playwright-mcp/
