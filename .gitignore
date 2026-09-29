@@ -7,3 +7,5 @@ dist
 tiles-src/
 *.log
 .playwright-mcp/
+
+.vercel

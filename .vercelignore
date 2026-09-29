@@ -1,0 +1,11 @@
+.env*
+!.env.example
+.playwright-mcp
+.claude
+docs
+supabase
+tests
+scripts
+tiles-src
+dist
+node_modules
