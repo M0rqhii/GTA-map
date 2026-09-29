@@ -3,6 +3,7 @@ import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2';
 // Browser origins allowed to call the functions. Requests without an Origin header (non-browser
 // clients) are still subject to the key/JWT checks inside each function.
 const ALLOWED_ORIGINS = new Set<string>([
+  'https://gta-searchgrid.vercel.app',
   'http://localhost:5173',
   'http://127.0.0.1:5173',
 ]);
