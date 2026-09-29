@@ -135,6 +135,11 @@ export function OrgMapView({ orgId, readOnly }: { orgId: string; readOnly: boole
 
   const members = useMemo(() => [...state.members.values()], [state.members]);
 
+  // The highlighted member left or was kicked: their row is gone, so drop the filter instead of dimming everyone.
+  useEffect(() => {
+    if (highlightUser && !state.members.has(highlightUser)) setHighlightUser(null);
+  }, [highlightUser, state.members]);
+
   const jump = useCallback((e: ActivityEntry) => {
     if (!map) return;
     const d = e.data ?? {};

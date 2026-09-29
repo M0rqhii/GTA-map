@@ -21,6 +21,7 @@ export function MembersPanel({ members, cellCounts, online, ownerId, meId, canKi
     || Number(online.has(b.id)) - Number(online.has(a.id))
     || a.username.localeCompare(b.username, 'pl'));
   const onlineCount = members.filter((m) => online.has(m.id)).length;
+  const highlighted = highlightUser ? members.find((m) => m.id === highlightUser) : undefined;
 
   return (
     <div>
@@ -28,6 +29,20 @@ export function MembersPanel({ members, cellCounts, online, ownerId, meId, canKi
         <span className="label-caps">{members.length} w organizacji</span>
         <span className="label-caps text-ok">● {onlineCount} online</span>
       </div>
+      {highlighted ? (
+        <button
+          type="button"
+          onClick={() => onHighlight(null)}
+          className="mb-2 flex w-full items-center gap-2 border border-sun/40 bg-sun-soft px-2.5 py-1.5 text-left text-sm transition-colors hover:border-sun"
+        >
+          <span className="min-w-0 flex-1 truncate text-ink-200">
+            Tylko: <span className="font-medium text-ink-100">{highlighted.username}</span>
+          </span>
+          <span className="flex shrink-0 items-center gap-1 font-mono text-[11px] uppercase tracking-wider text-sun">
+            <IconX width={13} height={13} />Pokaż wszystkich
+          </span>
+        </button>
+      ) : null}
       <ul className="space-y-0.5">
         {sorted.map((m) => {
           const active = highlightUser === m.id;
