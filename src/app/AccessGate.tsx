@@ -4,6 +4,7 @@ import * as api from '../lib/api';
 import { useAuth } from '../auth/AuthProvider';
 import { Button, Splash } from '../components/ui';
 import { PublicViewer } from '../pages/PublicViewer';
+import { ObsOverlay } from '../pages/ObsOverlay';
 
 const LoginPage = lazy(() => import('../pages/LoginPage').then((m) => ({ default: m.LoginPage })));
 const RegisterPage = lazy(() => import('../pages/RegisterPage').then((m) => ({ default: m.RegisterPage })));
@@ -63,6 +64,9 @@ export function AccessGate() {
   const { session, me, loading, meError, refreshMe, signOut } = useAuth();
   const location = useLocation();
   const path = location.pathname.replace(/^\/+|\/+$/g, '');
+
+  // Stream overlay shows only public data, even in a browser that is logged in.
+  if (path === '' && new URLSearchParams(location.search).get('obs') === '1') return <ObsOverlay />;
 
   if (loading) return <Splash />;
 

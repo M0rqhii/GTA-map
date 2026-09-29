@@ -39,6 +39,12 @@ Strona: **https://gta-searchgrid.vercel.app**
 W Ustawieniach organizacji włącz „Publiczna mapa”, wybierz opóźnienie (na żywo / 5 / 15 / 30 min)
 i skopiuj „Link dla widzów” (`https://gta-searchgrid.vercel.app/?org=…`).
 
+**Tryb OBS** – „Link do OBS” w Ustawieniach (`…/?org=…&obs=1`): sama mapa z siatką i przeszukanymi
+kwadratami, bez paneli i przycisków, zawsze wykadrowana na cały ląd (dopasowuje się do rozmiaru
+źródła). `&label=0` ukrywa też etykietę z nazwą. W OBS: scena → „+” → Przeglądarka → wklej link,
+ustaw rozmiar (np. 600 × 820). Przybliżanie: prawy klik na źródle → Interakcja. Tryb OBS zawsze
+pokazuje tylko dane publiczne, nawet w przeglądarce, w której ktoś jest zalogowany.
+
 ## Zabezpieczenia (co jest zrobione)
 
 - Wszystkie uprawnienia sprawdza baza (RLS + funkcje), nie przeglądarka. Test ataków:

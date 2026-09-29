@@ -103,13 +103,21 @@ export function OrgSettings({ org }: { org: OrgInfo }) {
           </div>
         </div>
         {org.is_public ? (
-          <div className="mt-3">
-            <p className="label-caps">Link dla widzów</p>
-            <div className="mt-2 flex items-center gap-2">
-              <input readOnly value={publicLink} className="h-9 min-w-0 flex-1 border border-ink-600 bg-ink-950/70 px-2 font-mono text-[12px] text-ink-200" onFocus={(e) => e.target.select()} />
-              <Button variant="ghost" size="sm" className="h-9" onClick={() => copy(publicLink, toast.push)} aria-label="Kopiuj link"><IconCopy /></Button>
-            </div>
-          </div>
+          <>
+            {[
+              { label: 'Link dla widzów', url: publicLink, hint: null },
+              { label: 'Link do OBS (źródło przeglądarki)', url: `${publicLink}&obs=1`, hint: 'Sama mapa bez paneli. Dopisz &label=0, aby ukryć też nazwę.' },
+            ].map((l) => (
+              <div key={l.label} className="mt-3">
+                <p className="label-caps">{l.label}</p>
+                <div className="mt-2 flex items-center gap-2">
+                  <input readOnly value={l.url} className="h-9 min-w-0 flex-1 border border-ink-600 bg-ink-950/70 px-2 font-mono text-[12px] text-ink-200" onFocus={(e) => e.target.select()} />
+                  <Button variant="ghost" size="sm" className="h-9" onClick={() => copy(l.url, toast.push)} aria-label={`Kopiuj: ${l.label}`}><IconCopy /></Button>
+                </div>
+                {l.hint ? <p className="mt-1 text-sm text-ink-400">{l.hint}</p> : null}
+              </div>
+            ))}
+          </>
         ) : null}
       </section>
 
