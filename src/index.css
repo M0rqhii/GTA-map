@@ -105,9 +105,13 @@ body {
 /* Public views: a muted satellite image, so the searched areas are what the eye lands on. */
 .map-muted .leaflet-tile-pane { filter: saturate(0.7) brightness(0.78); }
 .map-muted-strong .leaflet-tile-pane { filter: saturate(0.45) brightness(0.58) contrast(1.05); }
-/* Leaflet's plus-lighter tile blending draws light seams on a dimmed map; plain blending leaves hairline
-   gaps instead, which disappear once the background has the filtered ocean color. */
-.map-muted img.leaflet-tile, .map-muted-strong img.leaflet-tile { mix-blend-mode: normal; }
+/* At fractional zoom, Leaflet's plus-lighter tile blending draws light seams on a dimmed map and plain
+   blending leaves dark hairline gaps. Plain blending with tiles 1px larger overlaps them instead. */
+.map-muted img.leaflet-tile, .map-muted-strong img.leaflet-tile {
+  mix-blend-mode: normal;
+  width: 257px !important;
+  height: 257px !important;
+}
 .leaflet-container.map-muted { background: #182e47; }
 .leaflet-container.map-muted-strong { background: #111c29; }
 

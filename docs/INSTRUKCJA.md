@@ -42,14 +42,15 @@ Strona: **https://gta-searchgrid.vercel.app**
 W Ustawieniach organizacji włącz „Publiczna mapa”, wybierz opóźnienie (na żywo / 5 / 15 / 30 min)
 i skopiuj „Link dla widzów” (`https://gta-searchgrid.vercel.app/?org=…`).
 
-**Tryb OBS** – „Link do OBS” w Ustawieniach (`…/?org=…&obs=1`): sama mapa, bez paneli i przycisków,
-zawsze wykadrowana na cały ląd (dopasowuje się do rozmiaru źródła). Zrobiona pod małe okienko
-w rogu streamu: przygaszone tło, bez linii siatki, przeszukane miejsca jako wyraźne bursztynowe
-obszary, a świeżo zaznaczone kwadraty rozbłyskują na kilka sekund. Etykieta z nazwą, statusem
-i liczbą kwadratów siedzi w lewym górnym rogu (nad oceanem), a `&label=0` ją ukrywa. W OBS:
-scena → „+” → Przeglądarka → wklej link, ustaw rozmiar (np. 600 × 820; czytelne jest już od
-ok. 300 × 420). Przybliżanie: prawy klik na źródle → Interakcja. Tryb OBS zawsze pokazuje tylko
-dane publiczne, nawet w przeglądarce, w której ktoś jest zalogowany.
+**Tryb OBS** – „Link do OBS” w Ustawieniach (`…/?org=…&obs=1`): sama mapa przycięta do żółtej ramki
+siatki, bez paneli, przycisków i etykiet. Zrobiona pod małe okienko w rogu streamu: przygaszone tło,
+bez linii siatki, przeszukane miejsca jako wyraźne bursztynowe obszary, a świeżo zaznaczone kwadraty
+rozbłyskują na kilka sekund. Mapa zachowuje proporcje siatki i jest wyśrodkowana, a wokół niej
+źródło w OBS jest przezroczyste – najlepiej ustawić rozmiar w tych proporcjach (np. 560 × 820 albo
+290 × 425), wtedy nie ma pustych pasów. W prawym dolnym rogu (nad oceanem) jest mały podpis
+net-flow.pl; `&label=0` go ukrywa. W OBS: scena → „+” → Przeglądarka → wklej link, ustaw rozmiar.
+Przybliżanie: prawy klik na źródle → Interakcja. Tryb OBS zawsze pokazuje tylko dane publiczne,
+nawet w przeglądarce, w której ktoś jest zalogowany.
 
 ## Zabezpieczenia (co jest zrobione)
 

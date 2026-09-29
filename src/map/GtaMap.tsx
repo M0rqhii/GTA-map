@@ -6,7 +6,7 @@ type Props = {
   onReady: (map: L.Map | null) => void;
   className?: string;
   leftInset?: number; // px covered by a side panel on wide screens, kept free when framing the map
-  variant?: 'app' | 'overlay'; // overlay (OBS): no controls, tight framing that follows the source size
+  variant?: 'app' | 'overlay'; // overlay (OBS): no controls, framed to the grid, follows the source size
 };
 
 // Satellite map of San Andreas. Other layers are attached by the page through `onReady`.
@@ -22,7 +22,7 @@ export function GtaMap({ onReady, className = '', leftInset = 0, variant = 'app'
       crs: L.CRS.Simple,
       minZoom: overlay ? 0 : 1,
       maxZoom: 7,
-      zoomSnap: overlay ? 0.1 : 0.5,
+      zoomSnap: overlay ? 0 : 0.5, // overlay: any zoom, so the grid fills the source exactly
       zoomDelta: 0.5,
       wheelPxPerZoomLevel: 100,
       boxZoom: false,
@@ -43,7 +43,8 @@ export function GtaMap({ onReady, className = '', leftInset = 0, variant = 'app'
 
     const frame = () => {
       if (overlay) {
-        map.fitBounds(GRID_BOUNDS, { padding: [6, 6], animate: false });
+        // Just enough room for the frame line drawn on the grid edge.
+        map.fitBounds(GRID_BOUNDS, { padding: [2, 2], animate: false });
         return;
       }
       const inset = window.innerWidth >= 640 ? insetRef.current : 0;

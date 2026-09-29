@@ -5,7 +5,7 @@ import { GtaMap } from '../map/GtaMap';
 import { useGridLayer } from '../map/hooks';
 import { usePublicMap } from '../state/usePublicMap';
 import type { Cell } from '../state/orgReducer';
-import { pluralCells } from '../lib/format';
+import { GRID } from '../lib/grid';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const FRESH_MS = 4000;
@@ -37,16 +37,17 @@ function useFreshCells(cells: Map<number, Cell>, ready: boolean): Set<number> {
   return fresh;
 }
 
-// Stream overlay (`/?org=<id>&obs=1`): only the public map of one org, framed to the whole grid.
+// Stream overlay (`/?org=<id>&obs=1`): only the public map of one org, cropped to the grid frame.
 // Built to be read small in a corner of a stream: muted satellite image, no grid lines, searched areas
-// as solid shapes, a compact tag in the empty ocean at the top left. `&label=0` hides the tag.
+// as solid shapes. The map keeps the grid's proportions and sits centered; around it the page is
+// transparent in OBS. `&label=0` hides the small net-flow.pl credit.
 // Uses the same public data as the viewer page, never the session.
 export function ObsOverlay() {
   const [params] = useSearchParams();
   const raw = params.get('org');
   const orgId = raw && UUID_RE.test(raw) ? raw : null;
-  const showLabel = params.get('label') !== '0';
-  const { orgs, cells, status, delay, live } = usePublicMap(orgId);
+  const showCredit = params.get('label') !== '0';
+  const { orgs, cells, status } = usePublicMap(orgId);
   const [map, setMap] = useState<L.Map | null>(null);
   const fresh = useFreshCells(cells, status === 'ready');
   const version = useMemo(() => ({}), [cells, fresh]);
@@ -56,48 +57,39 @@ export function ObsOverlay() {
     map?.getContainer().classList.add('map-muted-strong');
   }, [map]);
 
+  // OBS browser sources (window.obsstudio) composite a transparent page over the scene.
+  useEffect(() => {
+    if (!('obsstudio' in window)) return;
+    const root = document.documentElement;
+    root.style.background = 'transparent';
+    document.body.style.background = 'transparent';
+    return () => {
+      root.style.background = '';
+      document.body.style.background = '';
+    };
+  }, []);
+
   const org = orgs?.find((o) => o.id === orgId) ?? null;
   const unavailable = !orgId || status === 'unavailable' || (orgs !== null && !org);
 
   return (
-    <div className="relative h-full overflow-hidden bg-[#111c29]">
-      <GtaMap onReady={setMap} variant="overlay" />
-      {showLabel || unavailable ? (
-        <div className="pointer-events-none absolute left-[1.8vmin] top-[1.8vmin] z-[1000] max-w-[60%]">
-          <div className="hud px-[1.8vmin] py-[1.3vmin]">
-            {unavailable ? (
-              <p className="font-mono text-[length:clamp(10px,2.8vmin,14px)] text-ink-300">Mapa niedostępna</p>
-            ) : org ? (
-              <>
-                <p className="truncate font-display text-[length:clamp(12px,3.8vmin,22px)] font-semibold uppercase leading-none tracking-[0.06em] text-ink-100">
-                  {org.name}
-                </p>
-                <p className="mt-[0.8vmin] flex items-center gap-x-[1.4vmin] whitespace-nowrap font-mono text-[length:clamp(9px,2.3vmin,12px)] uppercase leading-tight tracking-wider">
-                  {delay === 0 ? (
-                    live ? (
-                      <span className="flex items-center gap-1 text-ok">
-                        <span className="h-[0.7em] w-[0.7em] animate-pulse rounded-full bg-ok" />na żywo
-                      </span>
-                    ) : (
-                      <span className="text-ink-400">○ łączenie</span>
-                    )
-                  ) : (
-                    <span className="text-ink-200">⏱ −{delay} min</span>
-                  )}
-                  <span className="text-sun">{cells.size} {pluralCells(cells.size)}</span>
-                </p>
-              </>
-            ) : (
-              <p className="font-mono text-[length:clamp(10px,2.8vmin,14px)] text-ink-300">Wczytywanie…</p>
-            )}
+    <div className="grid h-full place-items-center overflow-hidden">
+      <div
+        className="relative overflow-hidden"
+        style={{ width: `min(100vw, calc(100vh * ${GRID.cols} / ${GRID.rows}))`, aspectRatio: `${GRID.cols} / ${GRID.rows}` }}
+      >
+        <GtaMap onReady={setMap} variant="overlay" />
+        {unavailable ? (
+          <div className="pointer-events-none absolute inset-0 z-[1000] grid place-items-center">
+            <p className="hud px-[2.5vmin] py-[1.5vmin] font-mono text-[length:clamp(10px,3vmin,15px)] text-ink-300">Mapa niedostępna</p>
           </div>
-        </div>
-      ) : null}
-      {showLabel ? (
-        <p className="pointer-events-none absolute bottom-[1.2vmin] right-[1.8vmin] z-[1000] font-mono text-[length:clamp(8px,1.9vmin,11px)] uppercase tracking-[0.14em] text-ink-400/80">
-          net-flow.pl
-        </p>
-      ) : null}
+        ) : null}
+        {showCredit ? (
+          <p className="pointer-events-none absolute bottom-[1.4%] right-[2.2%] z-[1000] font-mono text-[length:clamp(7px,1.7vmin,11px)] uppercase tracking-[0.14em] text-ink-400/80">
+            net-flow.pl
+          </p>
+        ) : null}
+      </div>
     </div>
   );
 }

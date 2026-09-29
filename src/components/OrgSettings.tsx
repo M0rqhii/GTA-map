@@ -106,7 +106,7 @@ export function OrgSettings({ org }: { org: OrgInfo }) {
           <>
             {[
               { label: 'Link dla widzów', url: publicLink, hint: null },
-              { label: 'Link do OBS (źródło przeglądarki)', url: `${publicLink}&obs=1`, hint: 'Sama mapa bez paneli. Dopisz &label=0, aby ukryć też nazwę.' },
+              { label: 'Link do OBS (źródło przeglądarki)', url: `${publicLink}&obs=1`, hint: 'Sama mapa w żółtej ramce, tło przezroczyste. Rozmiar np. 560 × 820. &label=0 ukrywa podpis net-flow.pl.' },
             ].map((l) => (
               <div key={l.label} className="mt-3">
                 <p className="label-caps">{l.label}</p>
