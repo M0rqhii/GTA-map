@@ -1,0 +1,25 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  --color-ink-950: #07090d;
+  --color-ink-900: #0b0f14;
+  --color-ink-800: #121821;
+  --color-ink-700: #1a2230;
+  --color-ink-600: #263041;
+  --color-ink-500: #3a4658;
+  --color-ink-300: #8a97aa;
+  --color-ink-100: #dbe2ec;
+  --color-accent: #f5b50a;
+  --color-accent-strong: #ffcc33;
+  --color-danger: #ef4444;
+  --color-ok: #22c55e;
+  --font-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", "Consolas", monospace;
+}
+
+html, body, #root { height: 100%; }
+body { margin: 0; background: var(--color-ink-900); color: var(--color-ink-100); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+.leaflet-container { background: #0e2a3d; font-family: var(--font-sans); outline: none; }
+.leaflet-control-zoom a { background: var(--color-ink-800) !important; color: var(--color-ink-100) !important; border-color: var(--color-ink-600) !important; }
+.pin-marker { background: transparent; border: none; }
