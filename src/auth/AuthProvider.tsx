@@ -29,6 +29,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshMe = useCallback(async () => {
     try {
       const profile = await api.getMe();
+      if (!profile) {
+        // The account behind this session no longer exists (e.g. deleted by a superadmin).
+        await supabase.auth.signOut({ scope: 'local' });
+        setSession(null);
+        setMe(null);
+        return null;
+      }
       setMe(profile);
       setMeError(false);
       return profile;
