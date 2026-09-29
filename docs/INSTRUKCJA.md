@@ -11,6 +11,9 @@ Strona: **https://gta-searchgrid.vercel.app**
   Znajdziesz je w **Panelu superadmina → Ukryte linki** (tam też wygenerujesz nowe, gdyby wyciekły).
   Każdy inny adres (`/login`, `/admin`, cokolwiek) pokazuje publiczną mapę.
 - Po zalogowaniu adres skraca się do zwykłej domeny i widać mapę organizacji.
+- Logowanie jest zapamiętywane w przeglądarce: po zamknięciu karty czy restarcie komputera wystarczy
+  wejść na zwykły adres. Trzeba zalogować się ponownie dopiero po „Wyloguj”, wyczyszczeniu danych
+  przeglądarki, w trybie incognito albo na innym urządzeniu.
 
 ## Pierwsze kroki
 

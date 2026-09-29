@@ -61,7 +61,7 @@ function AdminOrgView() {
 }
 
 export function AccessGate() {
-  const { session, me, loading, meError, refreshMe, signOut } = useAuth();
+  const { session, me, loading, meError, restoreFailed, refreshMe, signOut } = useAuth();
   const location = useLocation();
   const path = location.pathname.replace(/^\/+|\/+$/g, '');
 
@@ -69,6 +69,18 @@ export function AccessGate() {
   if (path === '' && new URLSearchParams(location.search).get('obs') === '1') return <ObsOverlay />;
 
   if (loading) return <Splash />;
+
+  if (!session && restoreFailed) {
+    return (
+      <div className="grid h-full place-items-center p-6 text-center">
+        <div>
+          <p className="text-ink-200">Brak połączenia z serwerem.</p>
+          <p className="mt-1 text-sm text-ink-400">Nadal jesteś zalogowany – mapa wczyta się sama, gdy wróci internet.</p>
+          <Button className="mt-4" onClick={() => window.location.reload()}>Spróbuj ponownie</Button>
+        </div>
+      </div>
+    );
+  }
 
   if (!session) {
     return path === '' ? <PublicViewer /> : <Suspense fallback={<Splash />}><HiddenPath path={path} inactive={false} /></Suspense>;

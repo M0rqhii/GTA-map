@@ -1,5 +1,5 @@
 // Every call to the backend goes through this module.
-import { FunctionsHttpError } from '@supabase/supabase-js';
+import { FunctionsHttpError, isAuthApiError } from '@supabase/supabase-js';
 import { supabase } from './supabase';
 import { cellKey, keyToCell } from './grid';
 import { usernameToEmail } from './validation';
@@ -65,6 +65,12 @@ export async function signInDiscord(redirectTo: string): Promise<void> {
 
 export async function signOut(): Promise<void> {
   await supabase.auth.signOut();
+}
+
+// True only when the auth server rejects the saved login's user (e.g. the account was deleted by a superadmin).
+export async function accountGone(): Promise<boolean> {
+  const { error } = await supabase.auth.getUser();
+  return isAuthApiError(error) && (error.status === 401 || error.status === 403);
 }
 
 export function register(key: string, username: string, password: string): Promise<{ ok: true }> {
