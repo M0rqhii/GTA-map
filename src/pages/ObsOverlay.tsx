@@ -38,6 +38,7 @@ export function ObsOverlay() {
                   {delay === 0 ? (live ? '● NA ŻYWO' : '○ ŁĄCZENIE') : `⏱ −${delay} MIN`}
                 </span>
                 <span className="text-ink-300">{cells.size} {pluralCells(cells.size)}</span>
+                <span className="border-l border-ink-600 pl-3 text-[10px] tracking-[0.14em] text-ink-500">net-flow.pl</span>
               </>
             ) : (
               <span className="text-ink-300">Wczytywanie…</span>

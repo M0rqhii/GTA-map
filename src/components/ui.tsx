@@ -65,6 +65,24 @@ export function Wordmark({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
   );
 }
 
+export const NET_FLOW_URL = 'https://www.net-flow.pl';
+
+// Subtle "powered by" credit.
+export function Signature({ className = '' }: { className?: string }) {
+  return (
+    <a
+      href={NET_FLOW_URL}
+      target="_blank"
+      rel="noopener"
+      className={`group inline-flex items-baseline gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-ink-500 transition-colors hover:text-ink-300 ${className}`}
+      title="Net-Flow – strony, sklepy i systemy na zamówienie"
+    >
+      powered by
+      <span className="font-display text-[12px] font-semibold tracking-[0.12em] text-ink-300 transition-colors group-hover:text-sun">Net-Flow</span>
+    </a>
+  );
+}
+
 export function Swatch({ color, size = 12, className = '' }: { color: string | null | undefined; size?: number; className?: string }) {
   return (
     <span

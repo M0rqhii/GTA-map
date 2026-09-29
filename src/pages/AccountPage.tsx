@@ -7,7 +7,7 @@ import { useConfirm } from '../components/ConfirmDialog';
 import { useToast } from '../components/Toasts';
 import { ColorSelector } from '../components/ColorSelector';
 import { MapBackdrop } from '../components/MapBackdrop';
-import { Button, SectionTitle, Wordmark } from '../components/ui';
+import { Button, SectionTitle, Signature, Wordmark } from '../components/ui';
 import { IconBack } from '../components/icons';
 
 export function AccountPage() {
@@ -64,6 +64,7 @@ export function AccountPage() {
             <Button variant="danger" onClick={leave}>Wyjdź z organizacji</Button>
           </div>
         </section>
+        <div className="mt-6 flex justify-center"><Signature /></div>
       </main>
     </div>
   );

@@ -7,7 +7,7 @@ import { validateOrgName, validatePassword, validateUsername } from '../lib/vali
 import { useAuth } from '../auth/AuthProvider';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useToast } from '../components/Toasts';
-import { Button, SectionTitle, Swatch, TextField, Wordmark } from '../components/ui';
+import { Button, SectionTitle, Signature, Swatch, TextField, Wordmark } from '../components/ui';
 import { IconBack, IconCopy } from '../components/icons';
 
 type Tab = 'orgs' | 'users' | 'links';
@@ -287,6 +287,9 @@ export function AdminPage() {
             )}
           </section>
         ) : null}
+        <footer className="mt-10 flex justify-center border-t border-ink-700 pt-4">
+          <Signature />
+        </footer>
       </div>
     </div>
   );

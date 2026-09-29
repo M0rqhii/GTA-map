@@ -7,7 +7,7 @@ import { useMapPointer } from '../map/useMapPointer';
 import { usePublicMap } from '../state/usePublicMap';
 import { cellLabel, type CellXY } from '../lib/grid';
 import { pluralCells } from '../lib/format';
-import { Wordmark } from '../components/ui';
+import { Signature, Wordmark } from '../components/ui';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -78,6 +78,9 @@ export function PublicViewer() {
             })
           )}
         </ul>
+        <footer className="shrink-0 border-t border-ink-700 px-4 py-2.5">
+          <Signature />
+        </footer>
       </aside>
 
       {/* Status bar */}

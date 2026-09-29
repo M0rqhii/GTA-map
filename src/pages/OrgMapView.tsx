@@ -21,7 +21,7 @@ import { PinEditor } from '../components/PinEditor';
 import { PinDetails } from '../components/PinDetails';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useToast } from '../components/Toasts';
-import { Button, Splash, Wordmark } from '../components/ui';
+import { Button, Signature, Splash, Wordmark } from '../components/ui';
 import {
   IconBack, IconBrush, IconClock, IconEye, IconEyeOff, IconLogout, IconPanel, IconPin, IconSettings, IconShield, IconUser, IconUsers,
 } from '../components/icons';
@@ -275,6 +275,9 @@ export function OrgMapView({ orgId, readOnly }: { orgId: string; readOnly: boole
             <OrgSettings org={org} />
           ) : null}
         </div>
+        <footer className="shrink-0 border-t border-ink-700 px-4 py-2">
+          <Signature />
+        </footer>
       </aside>
 
       {/* Toolbar */}

@@ -1,6 +1,6 @@
 import { MapBackdrop } from '../components/MapBackdrop';
 import { ColorSelector } from '../components/ColorSelector';
-import { Wordmark } from '../components/ui';
+import { Signature, Wordmark } from '../components/ui';
 
 export function ChooseColorPage() {
   return (
@@ -16,6 +16,7 @@ export function ChooseColorPage() {
             <ColorSelector submitLabel="Wybieram" />
           </div>
         </section>
+        <Signature className="mt-6 self-center" />
       </main>
     </div>
   );

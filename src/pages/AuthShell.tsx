@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { MapBackdrop } from '../components/MapBackdrop';
-import { Wordmark } from '../components/ui';
+import { Signature, Wordmark } from '../components/ui';
 
 // Frame for the account screens: blurred map behind a single HUD card.
 export function AuthShell({ eyebrow, title, children }: { eyebrow: string; title: string; children: ReactNode }) {
@@ -16,6 +16,7 @@ export function AuthShell({ eyebrow, title, children }: { eyebrow: string; title
           <h1 className="mt-1 font-display text-3xl font-semibold uppercase tracking-[0.06em]">{title}</h1>
           <div className="mt-6">{children}</div>
         </section>
+        <Signature className="mt-6 self-center" />
       </main>
     </div>
   );
