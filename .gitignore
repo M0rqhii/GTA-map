@@ -9,3 +9,6 @@ tiles-src/
 .playwright-mcp/
 
 .vercel
+
+# graphify knowledge graph (generated, rebuild with: graphify update .)
+graphify-out/

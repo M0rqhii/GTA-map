@@ -18,13 +18,13 @@ Strona: **https://gta-searchgrid.vercel.app**
 ## Pierwsze kroki
 
 1. Wejdź w ukryty link rejestracji i załóż konto (nick + hasło, min. 8 znaków).
-2. Nadaj sobie rolę superadmina (jednorazowo) – w Supabase → SQL Editor:
+3. Nadaj sobie rolę superadmina (jednorazowo) – w Supabase → SQL Editor:
    ```sql
    update public.profiles set is_superadmin = true where lower(username) = lower('TWÓJ_NICK');
    ```
    Kolejnych superadminów nadajesz już z panelu (`/admin` po zalogowaniu, ikonka tarczy na mapie).
-3. Załóż organizację (albo zrób to z panelu superadmina) i wybierz kolor.
-4. Rozdaj ludziom **link rejestracji** i **kod zaproszenia** organizacji (Ustawienia w panelu mapy).
+4. Załóż organizację (albo zrób to z panelu superadmina) i wybierz kolor.
+5. Rozdaj ludziom **link rejestracji** i **kod zaproszenia** organizacji (Ustawienia w panelu mapy).
    Konta możesz też zakładać sam w panelu superadmina (nick, hasło, organizacja).
 
 ## Obsługa mapy
